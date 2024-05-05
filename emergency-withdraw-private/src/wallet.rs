@@ -40,6 +40,62 @@ impl Wallet {
         Ok(balance)
     }
 
+    /// returns if the current Wallet is equal to the givenn one
+    /// public address are unique, so we use it to compare
+    pub fn equals(&self, wallet: &Wallet) -> bool {
+        self.address() == wallet.address()
+    }
+
+    /// if the wallet is find in the list-> remove it
+    /// otherwise -> add it
+    pub fn toggle_wallet_in_list(&self, wallets_list: &mut Vec<Wallet>) {
+        let mut res = false;
+        let mut i = 0;
+        while !res && i < wallets_list.len() {
+            if let Some(wallet) = wallets_list.get(i) {
+                if self.equals(wallet) {
+                    res = true;
+                }
+            }
+
+            i += 1;
+        }
+
+        if res {
+            wallets_list.swap_remove(i - 1);
+        } else {
+            wallets_list.push((*self).clone());
+        }
+    }
+
+    /// returns if the wallet is in a list
+    pub fn is_wallet_in_list(&self, wallet_list: &Vec<Wallet>) -> bool {
+        let mut res = false;
+        let mut i = 0;
+        while !res && i < wallet_list.len() {
+            if let Some(wallet) = wallet_list.get(i) {
+                if self.equals(wallet) {
+                    res = true;
+                }
+            }
+
+            i += 1;
+        }
+
+        return res;
+    }
+
+    /// calculate total balance of eth in list
+    /// here we just add eth balance foreach wallet
+    pub fn calculate_total_eth_balance_in_list(wallets_list: &Vec<Wallet>) -> Result<String> {
+        let mut res = U256::zero();
+        for i in 0..wallets_list.len() {
+            res = res + wallets_list.get(i).unwrap().eth_balance();
+        }
+
+        Ok(format_ether(res))
+    }
+
     // --- transaction
     // todo
 
@@ -97,4 +153,28 @@ mod tests {
 
         Ok(())
     }
+
+    #[tokio::test]
+    async fn test_wallets_equals() -> Result<()> {
+        // --- init
+        let provider = load_http_provider("TEST_PROVIDER_URL")?;
+
+        let wallet_builder = load_builder_wallet("TEST_PHRASE_MNEMONIC", "TEST_PASSWORD")?;
+
+        let w1 = Wallet::new(provider.clone(), &wallet_builder, 0u32).await?;
+
+        let w1_bis = Wallet::new(provider.clone(), &wallet_builder, 0u32).await?;
+
+        let w2 = Wallet::new(provider.clone(), &wallet_builder, 1u32).await?;
+        //---
+
+        assert!(w1.equals(&w1_bis));
+        assert_eq!(w2.equals(&w1_bis), false);
+
+        Ok(())
+    }
+
+    // todo test: toggle_wallet_in_list
+    //            is_wallet_in_list()
+    //            calculate_total_eth_balance_in_list
 }

@@ -1,15 +1,23 @@
 pub mod app_data;
+pub mod constants;
 pub mod provider;
+pub mod ui;
 pub mod utils;
 pub mod wallet;
 
+/*
 use ethers::{
     core::rand,
     signers::{coins_bip39::English, LocalWallet, MnemonicBuilder},
 };
-use eyre::Result;
+*/
 
-fn main() -> Result<()> {
+use eyre::Result;
+use ui::controller::Controller;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    /*
     let phrase = "work man father plunge mystery proud hollow address reunion sauce theory bonus";
     let index = 0u32;
     let password = "TREZOR123";
@@ -47,6 +55,7 @@ fn main() -> Result<()> {
 
     eprintln!("{:#?}", w1);
     eprintln!("{:#?}", w2);
-
+    */
+    Controller::new().await?.start()?;
     Ok(())
 }
