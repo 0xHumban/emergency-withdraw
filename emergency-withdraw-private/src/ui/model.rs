@@ -1,5 +1,6 @@
 use std::sync::{Arc, Mutex};
 
+use eyre::Result;
 use ratatui::widgets::TableState;
 use unicode_width::UnicodeWidthStr;
 
@@ -143,7 +144,7 @@ impl Model {
     }
 
     /// perform transfer foreach wallets selected
-    pub async fn start_transfer_wallet_selected(&mut self) {
+    pub async fn start_transfer_wallet_selected(&mut self) -> Result<()> {
         // use to store transactions results
         let transfer_results = Arc::new(Mutex::new(vec![]));
 
@@ -191,6 +192,14 @@ impl Model {
         for handle in tasks {
             handle.await.unwrap();
         }
+
+        // update all wallets balance
+        self.app_data.update_wallets_balance().await?;
+
+        // clear wallets selected
+        self.wallets_selected.clear();
+
+        Ok(())
     }
 }
 

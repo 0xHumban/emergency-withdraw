@@ -40,6 +40,12 @@ impl Wallet {
         Ok(balance)
     }
 
+    pub async fn update_eth_balance(&mut self, provider: HttpProvider) -> Result<()> {
+        self.eth_balance =
+            Wallet::get_eth_balance_for_local_wallet(&self.local_wallet, provider).await?;
+        Ok(())
+    }
+
     /// returns if the current Wallet is equal to the givenn one
     /// public address are unique, so we use it to compare
     pub fn equals(&self, wallet: &Wallet) -> bool {
