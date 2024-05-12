@@ -10,6 +10,20 @@ use crate::{app_data::AppData, constants::*, wallet::Wallet};
         May be using a vec of &Wallet instead Wallet is better
 */
 
+/// used to represent the current screen of the user
+#[derive(Clone, Eq, PartialEq)]
+pub enum CurrentScreen {
+    Main,
+    Transfering,
+}
+
+/// used to represent the current state of transfering screen of the user
+#[derive(Clone, Eq, PartialEq)]
+pub enum CurrentlyConfirming {
+    Yes,
+    No,
+}
+
 /// used to store app data and state of the app
 #[derive(Clone)]
 pub struct Model {
@@ -21,6 +35,11 @@ pub struct Model {
     pub longuest_item_lens: (u16, u16, u16),
     // used to store the Wallets selected by the user
     pub wallets_selected: Vec<Wallet>,
+
+    // represent the current screen of the app
+    pub current_screen: CurrentScreen,
+    // represent the current paragraph selected in the confirm transfer popup
+    pub currently_transfering: Option<CurrentlyConfirming>,
 }
 
 impl Model {
@@ -41,6 +60,8 @@ impl Model {
             table_state: TableState::default().with_selected(0),
             longuest_item_lens: Model::constraint_len_calculator(&app_data),
             wallets_selected: Vec::new(),
+            current_screen: CurrentScreen::Main,
+            currently_transfering: None,
         }
     }
 
@@ -146,11 +167,13 @@ impl Model {
                     )
                     .await;
 
+                /*
                 println!(
                     "result: address: {:?}, status: {:?}",
                     res.wallet.address(),
                     res.status
                 );
+                */
 
                 // push the transaciton result in the list
                 // use clone of Mutex to avoid locking many time the same Mutex

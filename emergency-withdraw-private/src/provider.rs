@@ -5,7 +5,6 @@ use ethers::providers::Provider;
 use eyre::Result;
 
 use crate::utils::load_env_variable;
-use ethers::middleware::Middleware;
 
 /// type alias to represent a http provider
 pub type HttpProvider = Arc<Provider<Http>>;

@@ -9,4 +9,5 @@ pub const WALLETS_NUMBER_VAR_NAME: &str = "WALLETS_NUMBER";
 // ui constants
 pub const APP_TITLE: &str = " EMERGENCY WITHDRAW ";
 pub const INFO_TEXT: &str =
-    "(q) quit | (↓) move down | (↑) move up | (Enter) select one | (a) select all";
+    " (q) quit | (↓  / ↑ ) move | (Enter) select | (a) select all | (t) transfer ";
+pub const INFO_TEXT_CONFIRM_TRANSFER: &str = " (ESC) quit | ( → ) next | (Enter) select ";

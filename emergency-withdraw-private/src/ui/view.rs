@@ -30,6 +30,9 @@ impl View {
         self.render_address_selected_counter(frame, footer_layout[0], model);
         self.render_total_eth_balance(frame, footer_layout[1], model);
         self.render_to_address(frame, main_layout[2], model);
+
+        // render popup
+        self.render_popup(frame, model);
     }
 
     /// returns the layout with constraints in app
