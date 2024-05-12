@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use ratatui::widgets::TableState;
 use unicode_width::UnicodeWidthStr;
 
@@ -121,16 +123,50 @@ impl Model {
 
     /// perform transfer foreach wallets selected
     pub async fn start_transfer_wallet_selected(&mut self) {
-        for wallet in self.wallets_selected.iter_mut() {
-            let res = wallet
-                .start_transfer(self.app_data.to_address(), self.app_data.provider())
-                .await;
+        // use to store transactions results
+        let transfer_results = Arc::new(Mutex::new(vec![]));
 
-            println!(
-                "result: address: {:?}, status: {:?}",
-                res.wallet.address(),
-                res.status
-            );
+        // use current instance for safe thread
+        let wallets_selected = self.wallets_selected.clone();
+
+        // store all tasks
+        let mut tasks = vec![];
+
+        for mut wallet in wallets_selected {
+            let curr_wallet = self.clone();
+            let transfer_results_clone = Arc::clone(&transfer_results);
+            // start async task with tokio
+            let handle = tokio::spawn(async move {
+                // wrap in a Arc & Mutex to share it between thread
+
+                let res = wallet
+                    .start_transfer(
+                        curr_wallet.app_data.to_address(),
+                        curr_wallet.app_data.provider(),
+                    )
+                    .await;
+
+                println!(
+                    "result: address: {:?}, status: {:?}",
+                    res.wallet.address(),
+                    res.status
+                );
+
+                // push the transaciton result in the list
+                // use clone of Mutex to avoid locking many time the same Mutex
+
+                let mut transfer_results_clone = transfer_results_clone
+                    .lock()
+                    .expect("Failed to lock transfer results");
+                transfer_results_clone.push(res);
+                drop(transfer_results_clone);
+            });
+            tasks.push(handle);
+        }
+
+        // wait for the end of all tasks
+        for handle in tasks {
+            handle.await.unwrap();
         }
     }
 }

@@ -2,7 +2,7 @@
 // check validity + perform transfer
 
 use ethers::middleware::{Middleware, SignerMiddleware};
-use ethers::types::{Address, TransactionReceipt, TransactionRequest, H256, U256};
+use ethers::types::{Address, TransactionReceipt, TransactionRequest, U256};
 use eyre::Result;
 
 use crate::{provider::HttpProvider, wallet::Wallet};
@@ -53,7 +53,7 @@ impl Wallet {
 
         match self.perform_transfer(to, provider.clone()).await {
             Ok(tx) => res.tx_receipt = tx,
-            Err(err) => res.status.failed_opt = Some(OptFailed::Reverted),
+            Err(_) => res.status.failed_opt = Some(OptFailed::Reverted),
         };
 
         res
@@ -91,7 +91,7 @@ impl Wallet {
         ;
 
         let tx: Option<TransactionReceipt> = client.send_transaction(tx, None).await?.await?;
-        let balance = provider.get_balance(self.address(), None).await?;
+        //let balance = provider.get_balance(self.address(), None).await?;
         Ok(tx)
     }
 }
