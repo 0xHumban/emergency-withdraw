@@ -81,6 +81,16 @@ impl AppData {
         ))
     }
 
+    /// update the balance of all wallets
+    pub async fn update_wallets_balance(&mut self) -> Result<()> {
+        let provider = self.provider();
+        for wallet in self.wallets.iter_mut() {
+            wallet.update_eth_balance(provider.clone()).await?;
+        }
+
+        Ok(())
+    }
+
     // --- getters
     pub fn wallet_builder(&self) -> MnemonicBuilder<English> {
         self.wallet_builder.clone()

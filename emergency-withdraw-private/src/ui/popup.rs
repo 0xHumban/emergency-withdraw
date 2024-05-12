@@ -32,7 +32,7 @@ impl Model {
     /// run the right action in function of the current state
     pub async fn perform_action_confirm_transfer(&mut self) {
         if self.currently_transfering == Some(CurrentlyConfirming::Yes) {
-            self.start_transfer_wallet_selected().await;
+            let _ = self.start_transfer_wallet_selected().await;
             self.exit_confirm_transfer();
         } else {
             self.exit_confirm_transfer();
