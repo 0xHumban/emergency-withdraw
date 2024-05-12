@@ -1,6 +1,7 @@
 pub mod app_data;
 pub mod constants;
 pub mod provider;
+pub mod transfer;
 pub mod ui;
 pub mod utils;
 pub mod wallet;
@@ -13,11 +14,11 @@ use ethers::{
 */
 
 use eyre::Result;
-use ui::controller::Controller;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("Starting...");
-    Controller::new().await?.start()?;
+
+    ui::controller::Controller::new().await?.start().await?;
     Ok(())
 }

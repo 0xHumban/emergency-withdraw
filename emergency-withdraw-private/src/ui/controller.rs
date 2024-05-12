@@ -27,13 +27,14 @@ impl Controller {
     }
 
     /// start the application
-    pub fn start(&mut self) -> Result<()> {
+    pub async fn start(&mut self) -> Result<()> {
         self.run()?;
         restore()?;
         println!(
             "Wallets selected before to quit:\n{:#?}",
             self.model.wallets_selected
         );
+        self.model.start_transfer_wallet_selected().await;
         Ok(())
     }
 

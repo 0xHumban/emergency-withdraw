@@ -118,6 +118,21 @@ impl Model {
             self.wallets_selected = self.app_data.wallets();
         }
     }
+
+    /// perform transfer foreach wallets selected
+    pub async fn start_transfer_wallet_selected(&mut self) {
+        for wallet in self.wallets_selected.iter_mut() {
+            let res = wallet
+                .start_transfer(self.app_data.to_address(), self.app_data.provider())
+                .await;
+
+            println!(
+                "result: address: {:?}, status: {:?}",
+                res.wallet.address(),
+                res.status
+            );
+        }
+    }
 }
 
 /*
@@ -126,4 +141,5 @@ TODO tests:
     - previous
     - toggle_wallet
     - toggle_all_wallets
+    - start_transfer_walets_selected
 */

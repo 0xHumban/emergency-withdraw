@@ -102,6 +102,9 @@ impl Wallet {
     // ---
 
     // --- getters
+    pub fn local_wallet(&self) -> LocalWallet {
+        self.local_wallet.clone()
+    }
     pub fn address(&self) -> Address {
         self.local_wallet.address()
     }
