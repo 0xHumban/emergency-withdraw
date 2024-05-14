@@ -1,7 +1,10 @@
 [package]
-name = "emergency-withdraw-private"
+name = "emergency-withdraw"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+authors = ["0xHumban <0xhumban@proton.me>"]
+categories = ["cryptography::cryptocurrencies"]
 
 [dependencies]
 crossterm = "0.27.0"
