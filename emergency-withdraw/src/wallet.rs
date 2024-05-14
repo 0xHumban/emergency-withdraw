@@ -150,14 +150,14 @@ mod tests {
             Wallet::new(provider.clone(), &wallet_builder, 0u32)
                 .await?
                 .address_to_string(),
-            "0x431a00da1d54c281aef638a73121b3d153e0b0f6"
+            "0x8fb0f07c3bfcd9c0ef31fa19b90f05d67d55f81f"
         );
 
         assert_eq!(
             Wallet::new(provider.clone(), &wallet_builder, 1u32)
                 .await?
                 .address_to_string(),
-            "0x995faa915cf9edb91ce9fe902cf530aca547a919"
+            "0x8e61cc4bfb01156bb74a5c75d8778fee5c3f975d"
         );
 
         Ok(())
