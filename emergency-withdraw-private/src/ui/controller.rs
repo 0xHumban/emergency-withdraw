@@ -62,7 +62,7 @@ impl Controller {
     /// handle key events
     async fn handle_key_event(&mut self, key_event: KeyEvent) {
         match self.model.current_screen {
-            CurrentScreen::Main => self.handle_key_event_main(key_event),
+            CurrentScreen::Main => self.handle_key_event_main(key_event).await,
             CurrentScreen::Transfering => {
                 self.handle_key_event_confirm_transfer_popup(key_event)
                     .await
@@ -71,7 +71,7 @@ impl Controller {
     }
 
     /// handle key events on main screen
-    fn handle_key_event_main(&mut self, key_event: KeyEvent) {
+    async fn handle_key_event_main(&mut self, key_event: KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
             KeyCode::Down => self.model.next(),
@@ -79,6 +79,12 @@ impl Controller {
             KeyCode::Enter => self.model.toggle_wallet(),
             KeyCode::Char('a') => self.model.toggle_all_wallets(),
             KeyCode::Char('t') => self.model.enter_confirm_transfer(),
+            KeyCode::Char('r') => self
+                .model
+                .app_data
+                .update_wallets_balance()
+                .await
+                .unwrap_or_default(),
             _ => {}
         };
     }
